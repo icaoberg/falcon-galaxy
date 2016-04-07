@@ -1,0 +1,38 @@
+<tool id="wine" name="wine" version="0.0.1">
+  <description>Runs demo using the wine dataset from UCI Machine Learning Repository</description>
+  <command interpreter="python">
+    wine.py $number_of_results
+  </command>
+  <inputs>
+    <!-- seed for random number generator -->
+    <param name="number_of_results" type="integer" value="10" label="Number of results"/>
+  </inputs>
+  <outputs>
+    <data format="zip" name="output.zip" />
+  </outputs>
+
+  <requirements>
+    <requirement type="package">wine</requirement>
+  </requirements>
+  <help>
+
+**Description**
+
+Forina, M. et al, PARVUS -
+An Extendible Package for Data Exploration, Classification and Correlation.
+Institute of Pharmaceutical and Food Analysis and Technologies, Via Brigata Salerno,
+16147 Genoa, Italy.
+
+-----
+
+**Input**
+
+Inputs.
+
+-----
+
+**Output**
+
+Outputs.
+</help>
+</tool>
