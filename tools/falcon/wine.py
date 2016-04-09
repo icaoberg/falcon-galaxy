@@ -10,14 +10,17 @@ import os
 import shutil
 
 if len(argv)>1:
-	number_of_results = int(argv[1])
+	query_object_index = int(argv[1])
+	number_of_results = int(argv[2])
+	output_filename = str(argv[3])
 else:
+	query_object_index = 1
 	number_of_results = 10
+	output_filename = 'output'
 
 output_directory = os.getcwd() + os.sep + "results"
-print "Saving results to " + output_directory
-if not os.path.exists( output_directory ):
-    os.makedirs( output_directory )
+if not os.path.exists(output_directory):
+	os.makedirs(output_directory)
 
 print '''
 This example uses the wine dataset from
@@ -34,13 +37,11 @@ data = genfromtxt( filename, delimiter=',' )
 
 print "I will use the first three feature vectors as my query wine set"
 query_wines = []
-query_wines.append(['wine0', 1, data[0]])
-query_wines.append(['wine1', 1, data[1]])
-query_wines.append(['wine2', 1, data[2]])
+query_wines.append(['wine' + str(query_object_index), 1, data[query_object_index]])
 
 print "\nAnd I will use the rest of the feature vectors to find the most similar images"
 dataset = []
-counter = 1
+counter = 0
 for datum in data:
 	dataset.append([ 'wine' + str(counter), 1, datum ])
 	counter = counter + 1
@@ -63,11 +64,13 @@ workspace['scores'] = scores
 workspace['query'] = query_wines
 workspace['dataset'] = dataset
 pickle.dump( workspace, open( output_directory + os.sep + "workspace.pkl", "w" ) )
-print "Saving results to " + output_directory + os.sep + "workspace.pkl"
-shutil.make_archive( "output", "zip", output_directory )
+cmd = 'cp ' + filename + ' ' + output_directory
+os.system(cmd)
+shutil.make_archive( output_filename, "zip", output_directory )
+cmd = 'mv ' + output_filename + '.zip ' + output_filename
+os.system(cmd)
 
-print os.listdir( os.getcwd() )
-
+print "The query object is " + str(query_wines[0][0]) + "\n"
 #icaoberg: just in case people do not have the tabulate package
 try:
 	from tabulate import tabulate
@@ -88,9 +91,3 @@ except:
 		rank = rank + 1
 
 remove(filename)
-
-#icaoberg: this line is neccesary so i can test this example in travis/jenkins
-if iids[0] == 'wine1':
- 	exit(0)
-else:
-	exit("\nTop match was not query image. Something went wrong with this example")
